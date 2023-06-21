@@ -36,10 +36,21 @@ namespace pry_Franco_Programa_de_ventas
 
         private void btnCargarventa_Click(object sender, EventArgs e)
         {
-             
+            try
+            {
+              
+                Class1 Datos1 = new Class1();
+                Datos1.InsertData(cmbVendedor.Text.ToString(), cmbProducto.Text.ToString(),DateTime.Now, txtKilos.Text.ToString());
+                
+                
+            }
+            catch (Exception ex)
+            {
 
-            Class1 accessDb = new Class1();
-            accessDb.InsertData(Convert.ToInt32(cmbVendedor.Text), Convert.ToInt32(txtId.Text), dtp.Value.ToString(), Convert.ToInt32(txtKilos.Text));
+                MessageBox.Show(ex.Message);
+            }              
+                
+          
         }
 
         private void frmMain_Load(object sender, EventArgs e)
