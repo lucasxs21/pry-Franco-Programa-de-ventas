@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.btnIniciar = new System.Windows.Forms.Button();
             this.lblUser = new System.Windows.Forms.Label();
             this.txtUser = new System.Windows.Forms.TextBox();
@@ -76,6 +77,7 @@
             this.txtContra.Name = "txtContra";
             this.txtContra.Size = new System.Drawing.Size(100, 20);
             this.txtContra.TabIndex = 4;
+            this.txtContra.UseSystemPasswordChar = true;
             // 
             // Form1
             // 
@@ -87,8 +89,11 @@
             this.Controls.Add(this.txtUser);
             this.Controls.Add(this.lblUser);
             this.Controls.Add(this.btnIniciar);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Registro";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -6,98 +6,108 @@ using System.Threading.Tasks;
 using System.Data.OleDb;
 using System.IO;
 using System.Windows.Forms;
+using System.Data;
 
 namespace pry_Franco_Programa_de_ventas
 {
     internal class Class1
     {
-        OleDbConnection conexion;
-        OleDbCommand comando ;
-        OleDbDataReader lector;
+        OleDbConnection cnn;
+        OleDbCommand cmdVendedor;
+        OleDbCommand cmdProducto;      
+        OleDbDataReader rdrVendedor;
+        OleDbDataReader rdrProducto;
+        
 
-        public string ruta = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=VERDULEROS.mdb;Persist Security Info=False;";
-
-        public void Conectar()
+        public void CargarDatos(ComboBox cmbProducto, ComboBox cmbVendedor)
         {
-
-
+            string conexion = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=VERDULEROS.mdb;";
+            cmbProducto.SelectedIndex = -1;
+            cmbVendedor.SelectedIndex = -1;
             try
             {
-                conexion = new OleDbConnection();
-                conexion.ConnectionString = ruta;
-                conexion.Open();
+                cnn = new OleDbConnection(conexion);
 
-            }
-            catch (Exception error)
-            {
+                cmdVendedor = new OleDbCommand();
+                cmdVendedor.Connection = cnn;
+                cmdVendedor.CommandType = CommandType.TableDirect;
+                cmdVendedor.CommandText = "Vendedores";
+
+                cmdProducto = new OleDbCommand();
+                cmdProducto.Connection = cnn;
+                cmdProducto.CommandType = CommandType.TableDirect;
+                cmdProducto.CommandText = "Productos";
+                cnn.Open();
+
+                rdrVendedor = cmdVendedor.ExecuteReader();
+
+                rdrProducto = cmdProducto.ExecuteReader();
+
+                cmbVendedor.Items.Clear();
+
+                cmbProducto.Items.Clear();
+
+                DataTable dtVendedor = new DataTable();
+
+                DataTable dtProducto = new DataTable();
+
+                if (rdrVendedor.HasRows)
+                {
+                    dtVendedor.Load(rdrVendedor);
+                    cmbVendedor.DataSource = dtVendedor;
+                    cmbVendedor.ValueMember = "IdVendedor";
+                    cmbVendedor.DisplayMember = "NombreVendedor";
+                }
+
+                if (rdrProducto.HasRows)
+                {
+                    dtProducto.Load(rdrProducto);
+                    cmbProducto.DataSource = dtProducto;
+                    cmbProducto.ValueMember = "IdProducto";
+                    cmbProducto.DisplayMember = "NomProducto";
+                }
 
 
-            }
 
-        }
-
-        public void InsertData(string idVendedor, string idProduc, DateTime fecha, string kilos)
-        {
-            comando = new OleDbCommand();
-
-            int vendedor = Convert.ToInt32(idVendedor);
-            int Producto = Convert.ToInt32(idProduc);
-            int kilos1 = Convert.ToInt32(kilos);
-            try
-            {
-
-                conexion = new OleDbConnection();
-                conexion.ConnectionString = ruta;
-
-                conexion.Open();
-                comando.Connection = conexion;
-                comando.CommandType = System.Data.CommandType.Text;
-
-
-                comando.CommandText = "INSERT INTO Ventas(Cod_Vendedor,Cod_Producto,Fecha,Kilos) VALUES(" + vendedor + ", " + Producto  + 1 + "," + kilos1 + ")";
-
-                //comando.Parameters.AddWithValue("@Cod_Vendedor", vendedor);
-                //comando.Parameters.AddWithValue("@Cod_Producto", Producto);
-                //comando.Parameters.AddWithValue("@Fecha", fecha);
-                //comando.Parameters.AddWithValue("@Kilos", kilos1);
-
-                comando.ExecuteNonQuery();
-
-                conexion.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("ERROR: " + ex.Message, "", MessageBoxButtons.OK);
+
+            }
+        }
+
+        public void RegistrarVenta(int Vendedor, int Producto, DateTime FechaVenta, int Cantidad)
+        {
+
+            string conexion = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=VERDULEROS.mdb;";
+            string sql = "INSERT INTO Ventas ([Cod Vendedor], [Cod Producto], Fecha, Kilos) VALUES (@vendedor, @producto, @fechaventa, @cantidad)";
+            try
+            {
+                cnn = new OleDbConnection(conexion);
+                cmdVendedor = new OleDbCommand();
+                cmdVendedor.Connection = cnn;
+
+                cmdVendedor.Connection.Open();
+                cmdVendedor.CommandType = CommandType.Text;
+                cmdVendedor.CommandText = sql;
+
+                cmdVendedor.Parameters.AddWithValue("@vendedor", Vendedor);
+                cmdVendedor.Parameters.AddWithValue("@producto", Producto);
+                cmdVendedor.Parameters.AddWithValue("@fechaventa", FechaVenta);
+                cmdVendedor.Parameters.AddWithValue("@cantidad", Cantidad);
+
+                cmdVendedor.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("ERROR: " + ex.Message, "", MessageBoxButtons.OK);
 
             }
 
 
+
         }
-
-        //public void InsertData(string codVendedor, string codProducto, DateTime fecha, string kilos)
-        //{
-        //    // Cadena de conexión a la base de datos Access
-        //    string connectionString = ruta;
-
-        //    // Consulta SQL para la inserción
-        //    string query = "INSERT INTO Ventas (Cod_Vendedor, Cod_Producto, Fecha, Kilos) VALUES (@CodVendedor, @CodProducto, @Fecha, @Kilos)";
-
-        //    // Crear la conexión y el comando
-        //    using (OleDbConnection connection = new OleDbConnection(connectionString))
-        //    using (OleDbCommand command = new OleDbCommand(query, connection))
-        //    {
-        //        // Agregar los parámetros con sus respectivos valores
-        //        command.Parameters.AddWithValue("@CodVendedor", codVendedor);
-        //        command.Parameters.AddWithValue("@CodProducto", codProducto);
-        //        command.Parameters.AddWithValue("@Fecha", fecha);
-        //        command.Parameters.AddWithValue("@Kilos", kilos);
-
-        //        // Abrir la conexión y ejecutar el comando
-        //        connection.Open();
-        //        command.ExecuteNonQuery();
-        //    }
-        //}
-
 
 
     }

@@ -38,18 +38,20 @@ namespace pry_Franco_Programa_de_ventas
         {
             try
             {
-              
+
                 Class1 Datos1 = new Class1();
-                Datos1.InsertData(cmbVendedor.Text.ToString(), cmbProducto.Text.ToString(),DateTime.Now, txtKilos.Text.ToString());
-                
-                
+                Datos1.RegistrarVenta(Convert.ToInt32(cmbVendedor.SelectedValue), Convert.ToInt32(cmbProducto.SelectedValue), dtp.Value, Convert.ToInt32(txtKilos.Text));
+                MessageBox.Show("Se a cargado correctamente");
+
+
             }
             catch (Exception ex)
             {
 
                 MessageBox.Show(ex.Message);
-            }              
-                
+            }
+            cmbProducto.SelectedIndex = -1;
+            txtKilos.Text = "0";
           
         }
 
@@ -58,12 +60,26 @@ namespace pry_Franco_Programa_de_ventas
             try
             {
                 Class1 Datos = new Class1();
-                Datos.Conectar();
+                Datos.CargarDatos(cmbProducto, cmbVendedor);
             }
             catch (Exception ex)
             {
                 MessageBox.Show (ex.Message);
                 
+            }
+        }
+
+        private void txtKilos_TextChanged(object sender, EventArgs e)
+        {
+            btnCargarventa.Enabled = true;
+        }
+
+        private void txtKilos_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+
+                e.Handled = true;
             }
         }
     }

@@ -21,9 +21,23 @@ namespace pry_Franco_Programa_de_ventas
         {
             if (txtUser.Text == "admin" && txtContra.Text == "admin")
             {
-                frmMain frmMain = new frmMain();
-                this.Hide();
+                frmMain frmMain = new frmMain();             
+                frmMain.ShowDialog();
+
+               
+
+
+                
             }
+            else
+            {
+                MessageBox.Show("Error");
+            }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
